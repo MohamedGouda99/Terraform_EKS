@@ -265,7 +265,7 @@ jobs:
       - name: Deploy to EKS
         run: |
           mkdir ~/.aws/
-          echo [default]>> credentials
+          echo [dev]>> credentials
 
           echo AWS_ACCESS_KEY_ID="AKIAQ5ZFAJFAABJF6FEV" >> credentials
           echo AWS_SECRET_ACCESS_KEY="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" >> credentials
@@ -276,9 +276,9 @@ jobs:
           aws eks update-kubeconfig --name eks-cluster-test --region us-west-2
 
           cat /home/runner/.kube/config
-          aws sts get-caller-identity
+          aws sts get-caller-identity --profile dev
 
-          aws s3 ls --profile default
+          aws s3 ls --profile dev
 
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
