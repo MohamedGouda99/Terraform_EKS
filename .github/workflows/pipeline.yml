@@ -250,12 +250,12 @@ jobs:
           version: "v1.24.0" # default is latest stable
         id: install
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_KEY_ID}}
-          aws-region: ${{secrets.AWS_REGION}}
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+      #     aws-secret-access-key: ${{secrets.AWS_SECRET_KEY_ID}}
+      #     aws-region: ${{secrets.AWS_REGION}}
 
       - name: Install aws-iam-authenticator
         run: |
