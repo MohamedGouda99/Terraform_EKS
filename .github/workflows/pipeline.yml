@@ -25,8 +25,8 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          aws configure set aws_access_key_id AKIASZFRB32E3IQVXH56
-          aws configure set aws_secret_access_key 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
+          aws configure set aws_access_key_id AKIASZFRB32E65VL7R6G
+          aws configure set aws_secret_access_key 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
           aws configure set default.region us-east-1
 
 
