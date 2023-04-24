@@ -264,11 +264,12 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          aws configure set aws_access_key_id AKIAQ5ZFAJFAABJF6FEV
-          aws configure set aws_secret_access_key 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
+          aws configure set aws_access_key_id AKIAQ5ZFAJFAIJKHNVP3
+          aws configure set aws_secret_access_key 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
           aws configure set default.region us-west-2
 
-          aws s3 ls  
+          aws ec2 describe-instances
+
 
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
