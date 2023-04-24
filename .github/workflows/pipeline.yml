@@ -41,3 +41,6 @@ jobs:
           aws eks update-kubeconfig --name sprints-eks --region us-east-1
           kubectl config current-context
           kubectl apply -f nginx-pod.yml --kubeconfig /home/runner/.kube/config
+          kubectl apply -f nginx-service.yml --kubeconfig /home/runner/.kube/config
+          kubectl apply -f nginx-replicaset.yml --kubeconfig /home/runner/.kube/config
+          kubectl apply -f nginx-deployment.yml --kubeconfig /home/runner/.kube/config
