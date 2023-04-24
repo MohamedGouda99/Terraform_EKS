@@ -279,4 +279,4 @@ jobs:
           kubectl version --client
           aws eks update-kubeconfig --name eks-cluster-test --region us-west-2
           kubectl config current-context
-          kubectl apply -f nginx-pod.yml --kubeconfig /home/runner/.kube/config
+          AWS_PROFILE=default kubectl apply -f nginx-pod.yml --kubeconfig /home/runner/.kube/config
