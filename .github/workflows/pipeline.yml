@@ -278,7 +278,7 @@ jobs:
           cat /home/runner/.kube/config
           aws sts get-caller-identity --profile dev
 
-          aws s3 ls --profile dev
+          aws s3 ls --profile dev --region us-west-2
 
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
