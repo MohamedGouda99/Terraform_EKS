@@ -38,6 +38,6 @@ jobs:
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           kubectl version --client
-          aws eks update-kubeconfig --name eks-cluster-test --region us-east-1
+          aws eks update-kubeconfig --name eks-cluster1 --region us-east-1
           kubectl config current-context
           kubectl apply -f nginx-pod.yml --kubeconfig /home/runner/.kube/config
