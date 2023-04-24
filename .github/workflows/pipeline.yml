@@ -29,7 +29,7 @@ jobs:
           aws configure set aws_secret_access_key hBwR31pN58sur3xAAKdpDy0XTavEB9EhVXoJS3zu
           aws configure set default.region us-east-1
 
-          aws ec2 describe-instances
+
 
 
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
