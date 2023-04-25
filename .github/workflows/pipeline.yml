@@ -44,4 +44,4 @@ jobs:
           kubectl apply -f nginx-service.yml --kubeconfig /home/runner/.kube/config
           kubectl apply -f nginx-replicaset.yml --kubeconfig /home/runner/.kube/config
           kubectl apply -f nginx-deployment.yml --kubeconfig /home/runner/.kube/config
-          kubectl port-forward nginx-pod 8080:80
+          nohup kubectl port-forward nginx-pod 8080:80 > port-forward.log &
