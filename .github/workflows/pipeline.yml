@@ -25,8 +25,8 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          aws configure set aws_access_key_id AKIAQ5ZFAJFAFNWZHI6I
-          aws configure set aws_secret_access_key 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
+          aws configure set aws_access_key_id AKIAQ5ZFAJFAG6LLADFD
+          aws configure set aws_secret_access_key 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
           aws configure set default.region us-east-2
 
 
@@ -38,7 +38,7 @@ jobs:
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           kubectl version --client
-          aws eks update-kubeconfig --name sprints-eks --region us-east-2
+          aws eks update-kubeconfig --name osa-cluster --region us-east-2
           kubectl config current-context
           kubectl apply -f nginx-pod.yml --kubeconfig /home/runner/.kube/config
           kubectl apply -f nginx-service.yml --kubeconfig /home/runner/.kube/config
