@@ -50,7 +50,7 @@ jobs:
 
           eksctl create cluster --name my-eks --region us-east-1 --nodegroup-name pro-19 --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed
 
-          echo "DONE"
+          echo "done"
 
   install_terraform:
     needs: ssh_ec2
