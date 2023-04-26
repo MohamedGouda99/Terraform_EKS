@@ -47,7 +47,9 @@ jobs:
 
           #############################################create EKS Cluster################
 
-          sudo ssh -o StrictHostKeyChecking=no -i eks_key.pem ${{env.USER_NAME}}@$EC2_INSTANCE_IP "eksctl create cluster --name my-eks --region us-west-1 --nodegroup-name pro-19 --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed"
+
+
+          aws eks update-kubeconfig --name my-eks --region ${{env.REGION}}
 
           echo "DONE"
 
@@ -60,6 +62,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
+        env:
+         
+          
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_KEY_ID}}
+          REGION: ${{secrets.AWS_REGION}}
         run: |
           sudo apt-get update
           sudo apt-get install -y unzip
@@ -76,8 +84,9 @@ jobs:
       
       - name: Apply
         run: |
-           terraform plan -var="cluster_id=my-eks"
-           terraform apply -var="cluster_id=my-eks" --auto-approve
+           AWS_ACCESS_KEY_ID=${{env.AWS_ACCESS_KEY_ID}} AWS_SECRET_ACCESS_KEY=${{env.AWS_SECRET_ACCESS_KEY}} AWS_REGION=${{env.REGION}} terraform apply -var="cluster_id=my-eks" --auto-approve
+
+
 
 
  
