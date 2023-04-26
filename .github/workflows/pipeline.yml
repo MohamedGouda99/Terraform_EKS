@@ -18,8 +18,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_KEY_ID}}
           REGION: ${{secrets.AWS_REGION}}
-          
+
         run: |
+
+          sudo chmod +x eks_key.pem
 
           sudo ssh -o StrictHostKeyChecking=no -i eks_key.pem ${{env.USER_NAME}}@$EC2_INSTANCE_IP 
           #############knowing current aws version#################
