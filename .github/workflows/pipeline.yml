@@ -49,7 +49,7 @@ jobs:
 
           sudo ssh -o StrictHostKeyChecking=no -i eks_key.pem ${{env.USER_NAME}}@$EC2_INSTANCE_IP "eksctl create cluster --name my-eks --region us-west-1 --nodegroup-name pro-19 --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed"
 
-          echo "done"
+          echo "DONE"
 
   install_terraform:
     needs: ssh_ec2
@@ -73,20 +73,14 @@ jobs:
         run: |
           terraform version
           terraform init
-
-  apply_terraform:
-    needs: install_terraform
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-
-    steps:
-      - name: Deploy
+      
+      - name: Apply
         run: |
-          terraform plan -var="cluster_id=my-eks"
-          terraform apply -var="cluster_id=my-eks" --auto-approve
+           terraform plan -var="cluster_id=my-eks"
+           terraform apply -var="cluster_id=my-eks" --auto-approve
 
-          echo "DONE"
+
+ 
   
 
   
