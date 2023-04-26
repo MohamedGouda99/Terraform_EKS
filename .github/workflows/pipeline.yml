@@ -21,34 +21,34 @@ jobs:
 
         run: |
           sudo mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "${{env.PRIVATE_KEY}}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan ${{env.EC2_INSTANCE_IP}} >> ~/.ssh/known_hosts
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP 
+          sudo chmod 700 ~/.ssh
+          sudo echo "${{env.PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          sudo ssh-keyscan ${{env.EC2_INSTANCE_IP}} >> ~/.ssh/known_hosts
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP 
           #############knowing current aws version#################
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws --version"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws --version"
          
           #########################aws configure using IAM CRED##########################################
 
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws configure set aws_access_key_id ${{env.AWS_ACCESS_KEY_ID}}"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws configure set aws_secret_access_key ${{env.AWS_SECRET_ACCESS_KEY}}"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws configure set region ${{env.REGION}}"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws configure set aws_access_key_id ${{env.AWS_ACCESS_KEY_ID}}"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws configure set aws_secret_access_key ${{env.AWS_SECRET_ACCESS_KEY}}"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws configure set region ${{env.REGION}}"
 
           #########################################INSTALL kubectl & eksctl#################
 
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "chmod +x ./kubectl"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "sudo mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "kubectl version --short --client"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "chmod +x ./kubectl"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "sudo mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "kubectl version --short --client"
 
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "sudo mv /tmp/eksctl /usr/local/bin"
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "eksctl version"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "sudo mv /tmp/eksctl /usr/local/bin"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "eksctl version"
 
           #############################################create EKS Cluster################
 
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "eksctl create cluster --name my-eks --region us-west-1 --nodegroup-name pro-19 --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed"
+          sudo ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP "eksctl create cluster --name my-eks --region us-west-1 --nodegroup-name pro-19 --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed"
 
           echo "done"
 
