@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Deploy in EC2
         env:
           PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
@@ -55,6 +55,7 @@ jobs:
           eksctl create cluster --name my-eks --region us-east-1 --nodegroup-name pro-19 --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed
 
   install_terraform:
+    needs: ssh_ec2
     runs-on: ubuntu-latest
 
     steps:
