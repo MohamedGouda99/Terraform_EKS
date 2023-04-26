@@ -17,14 +17,10 @@ provider "kubernetes" {
 }
 
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.73"
-
-    }
-  }
+provider "aws" {
+  region     = "us-west-1"
+  access_key = "AKIAQ5ZFAJFAG7WT3XZQ"
+  secret_key = "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"
 }
 
 
