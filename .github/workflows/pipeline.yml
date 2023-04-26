@@ -1,48 +1,88 @@
-name: deploy to EKS
+name: Build and Deploy
+
 on:
   push:
-    branches: ["master"]
+    branches:
+      - master
 
 jobs:
-  deploy:
+  ssh_ec2:
     runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy in EC2
+        env:
+          PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
+          EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP}}
+          USER_NAME: ${{ secrets.USER_NAME}}
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_KEY_ID}}
+          REGION: ${{secrets.AWS_REGION}}
+
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{env.PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan ${{env.EC2_INSTANCE_IP}} >> ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP 
+          #############knowing current aws version#################
+          aws --version
+          #############Run these commands to update our version of AWS CLI###################
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip -u awscliv2.zip
+          sudo ./aws/install
+          /usr/local/bin/aws --version
+          #########################aws configure using IAM CRED##########################################
+
+          aws configure set aws_access_key_id ${{env.AWS_ACCESS_KEY_ID}}
+          aws configure set aws_secret_access_key ${{env.AWS_SECRET_ACCESS_KEY}}
+          aws configure set region ${{env.REGION}}
+
+          #########################################INSTALL kubectl & eksctl#################
+
+          curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+          kubectl version --short --client
+
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin
+          eksctl version
+
+          #############################################create EKS Cluster################
+
+          eksctl create cluster --name my-eks --region us-east-1 --nodegroup-name pro-19 --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed
+
+  install_terraform:
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v2.0
-        with:
-          version: "v1.25.0" # default is latest stable
-        id: install
-
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-      #     aws-secret-access-key: ${{secrets.AWS_SECRET_KEY_ID}}
-      #     aws-region: ${{secrets.AWS_REGION}}
-
-      - name: Deploy to EKS
+      - name: Install dependencies
         run: |
-          aws configure set aws_access_key_id AKIAQ5ZFAJFAG6LLADFD
-          aws configure set aws_secret_access_key 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
-          aws configure set default.region us-east-2
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          wget https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
+          unzip terraform_1.0.9_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
 
+      - name: Build
+        run: |
+          terraform version
+          terraform init
 
+  apply_terraform:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
 
-
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-
-          curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
-          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-          kubectl version --client
-          aws eks update-kubeconfig --name sprints-eks --region us-east-2
-          kubectl config current-context
-          kubectl apply -f nginx-pod.yml --kubeconfig /home/runner/.kube/config
-          kubectl apply -f nginx-service.yml --kubeconfig /home/runner/.kube/config
-          kubectl apply -f nginx-replicaset.yml --kubeconfig /home/runner/.kube/config
-          kubectl apply -f nginx-deployment.yml --kubeconfig /home/runner/.kube/config
-          nohup kubectl port-forward nginx-pod 8080:80 > port-forward.log &
-          echo "job succedeed"
+    steps:
+      - name: Deploy
+        run: |
+          terraform plan -var="cluster_id=my-eks"
+          terraform apply -var="cluster_id=my-eks" --auto-approve
