@@ -28,11 +28,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{env.USER_NAME}}@$EC2_INSTANCE_IP 
           #############knowing current aws version#################
           aws --version
-          #############Run these commands to update our version of AWS CLI###################
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip -u awscliv2.zip
-          sudo ./aws/install
-          /usr/local/bin/aws --version
+         
           #########################aws configure using IAM CRED##########################################
 
           aws configure set aws_access_key_id ${{env.AWS_ACCESS_KEY_ID}}
