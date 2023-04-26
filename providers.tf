@@ -17,6 +17,7 @@ provider "kubernetes" {
 }
 
 provider "aws" {
-  region = "us-west-1"
-
+  region  = "us-west-2"
+  version = "3.62.0"
 }
+
