@@ -21,7 +21,8 @@ jobs:
 
         run: |
           
-           
+          sudo ssh -o StrictHostKeyChecking=no -i ${{env.PRIVATE_KEY}} ${{env.USER_NAME}}@$EC2_INSTANCE_IP 
+          #############knowing current aws version#################
           sudo ssh -o StrictHostKeyChecking=no -i ${{env.PRIVATE_KEY}} ${{env.USER_NAME}}@$EC2_INSTANCE_IP "aws --version"
          
           #########################aws configure using IAM CRED##########################################
