@@ -75,7 +75,7 @@ jobs:
           terraform init
 
   apply_terraform:
-    needs: build
+    needs: install_terraform
     runs-on: ubuntu-latest
     environment:
       name: production
